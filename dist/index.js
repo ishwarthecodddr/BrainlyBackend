@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("./config");
 const app = (0, express_1.default)();
 const zod_1 = __importDefault(require("zod"));
 app.use(express_1.default.json());
@@ -59,12 +58,15 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             password,
         });
         if (userexist) {
-            const token = jsonwebtoken_1.default.sign({ id: userexist._id }, config_1.JWT_SECRET);
+            const token = jsonwebtoken_1.default.sign({ id: userexist._id.toString() }, "secret");
             res.json({ token: token });
+        }
+        else {
+            res.status(401).json({ msg: "Invalid username or password" });
         }
     }
     catch (e) {
-        res.json("Error signIn plz check the credentials");
+        res.status(500).json({ msg: "Error during signin" });
     }
 }));
 app.post("/content", middleware_1.Usermiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

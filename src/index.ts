@@ -18,7 +18,6 @@ declare global {
     }
   }
 }
-
 const signupSchema = z.object({
   username: z.string().min(3, { message: "min 3 to 10 letters" }),
   password: z.string().min(8, {
@@ -56,11 +55,13 @@ app.post("/signin", async (req, res) => {
       password,
     });
     if (userexist) {
-      const token = jwt.sign({ id: userexist._id }, JWT_SECRET);
+      const token = jwt.sign({ id: userexist._id.toString() }, "secret");
       res.json({ token: token });
+    } else {
+      res.status(401).json({ msg: "Invalid username or password" });
     }
   } catch (e) {
-    res.json("Error signIn plz check the credentials");
+    res.status(500).json({ msg: "Error during signin" });
   }
 });
 app.post("/content", Usermiddleware, async (req, res) => {
