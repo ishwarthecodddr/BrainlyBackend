@@ -18,7 +18,15 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const app = (0, express_1.default)();
 const zod_1 = __importDefault(require("zod"));
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        'http://localhost:5173',
+        'https://brainly-frontend-seven.vercel.app'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 const db_1 = require("./db");
 const middleware_1 = require("./middleware");
 const util_1 = require("./util");
