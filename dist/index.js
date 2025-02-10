@@ -130,21 +130,21 @@ app.post("/brain/share", middleware_1.Usermiddleware, (req, res) => __awaiter(vo
 app.get("/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const hash = req.params.shareLink;
     const link = yield db_1.LinkModel.findOne({
-        hash
+        hash,
     });
     if (!link) {
         res.status(411).json({ msg: "Sent incorrect inputs" });
         return; // early return
     }
     const user = yield db_1.UserModel.findOne({
-        _id: link.userId
+        _id: link.userId,
     });
     if (!user) {
         res.json("user doesn't exit!!! , control shouldn't reach here");
         return;
     }
     const content = yield db_1.ContentModel.find({
-        userId: link.userId
+        userId: link.userId,
     });
     res.json({ username: user.username, content: content });
 }));
