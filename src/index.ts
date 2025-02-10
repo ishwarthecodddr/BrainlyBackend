@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
@@ -30,7 +30,7 @@ const signupSchema = z.object({
 //   link: z.string();
 // }
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", async (req:Request, res:Response) => {
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -46,7 +46,7 @@ app.post("/signup", async (req, res) => {
     console.log(e);
   }
 });
-app.post("/signin", async (req, res) => {
+app.post("/signin", async (req:Request, res:Response) => {
   const username = req.body.username;
   const password = req.body.password;
   try {
@@ -64,7 +64,7 @@ app.post("/signin", async (req, res) => {
     res.status(500).json({ msg: "Error during signin" });
   }
 });
-app.post("/content", Usermiddleware, async (req, res) => {
+app.post("/content", Usermiddleware, async (req: Request, res: Response) => {
   const link = req.body.link;
   const title = req.body.title;
   const type = req.body.type;
@@ -85,14 +85,14 @@ app.post("/content", Usermiddleware, async (req, res) => {
   }
 });
 
-app.get("/content", Usermiddleware, async (req, res) => {
+app.get("/content", Usermiddleware, async (req:Request, res:Response) => {
   const content = await ContentModel.find({
     // @ts-ignore
     userId: req.userId,
   }).populate("userId", "username");
   res.json({ content });
 });
-app.delete("/content", Usermiddleware, async (req, res) => {
+app.delete("/content", Usermiddleware, async (req:Request, res:Response) => {
   const contentId = req.body.contentId;
   await ContentModel.deleteOne({
     contentId,
@@ -101,16 +101,16 @@ app.delete("/content", Usermiddleware, async (req, res) => {
   res.json({ msg: "deleted successfully" });
 });
 
-app.post("/brain/share", Usermiddleware, async (req, res) => {
+app.post("/brain/share", Usermiddleware, async (req:Request, res:Response) => {
   const share = req.body.share;
   try {
     if (share) {
       const hash = Hashfuntion(20);
       await LinkModel.create({
-        hash ,
+        hash,
         userId: req.userId,
       });
-      res.json({msg:"shared successfully"+"\n link: "+hash},)
+      res.json({ msg: "shared successfully" + "\n link: " + hash });
     } else {
       await LinkModel.deleteOne({
         userId: req.userId,
@@ -121,25 +121,25 @@ app.post("/brain/share", Usermiddleware, async (req, res) => {
     res.json(e);
   }
 });
-app.get("/brain/:shareLink",async (req, res) => {
+app.get("/brain/:shareLink", async (req:Request, res:Response) => {
   const hash = req.params.shareLink;
   const link = await LinkModel.findOne({
-    hash
-  })
+    hash,
+  });
   if (!link) {
     res.status(411).json({ msg: "Sent incorrect inputs" });
     return; // early return
   }
   const user = await UserModel.findOne({
-    _id: link.userId
+    _id: link.userId,
   });
   if (!user) {
     res.json("user doesn't exit!!! , control shouldn't reach here");
     return;
   }
   const content = await ContentModel.find({
-    userId:link.userId
-  })
-  res.json({ username:user.username,content:content });
+    userId: link.userId,
+  });
+  res.json({ username: user.username, content: content });
 });
 app.listen(3000);
