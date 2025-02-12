@@ -21,11 +21,15 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)({
     origin: [
         'http://localhost:5173',
-        'https://brainly-frontend-seven.vercel.app'
+        'https://brainly123.vercel.app',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Authorization'],
+    maxAge: 86400,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 const db_1 = require("./db");
 const middleware_1 = require("./middleware");

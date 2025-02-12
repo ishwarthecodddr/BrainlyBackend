@@ -1,24 +1,25 @@
 import express, { Request, Response } from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "./config";
 const app = express();
 import z, { string } from "zod";
 app.use(express.json());
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://brainly123.vercel.app'
+    'https://brainly123.vercel.app',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
-import { UserModel, TagsModel, ContentModel, LinkModel } from "./db";
+import { UserModel, ContentModel, LinkModel } from "./db";
 import { Usermiddleware } from "./middleware";
 import { Hashfuntion } from "./util";
-
 declare global {
   namespace Express {
     interface Request {
